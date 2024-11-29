@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <openssl/bn.h>
+
+#define NBITS 256
+
+void printBN(char *msg, BIGNUM * a)
+{
+   /* Use BN_bn2hex(a) for hex string
+    * Use BN_bn2dec(a) for decimal string */
+   char * number_str = BN_bn2hex(a);
+   printf("%s %s\n", msg, number_str);
+   OPENSSL_free(number_str);
+}
+
+int main ()
+{
+
+  BN_CTX *ctx = BN_CTX_new();
+
+  BIGNUM *e = BN_new();
+  BIGNUM *n = BN_new();
+  BIGNUM *s = BN_new();
+  BIGNUM *signed_m = BN_new();
+  BIGNUM *expected_m = BN_new();
+
+    
+  BN_hex2bn(&n, "BF8AD1634DE118EA875DE8163C8F7FB6BE871737A40CF8313F9F45544021D79D079BCA03234ABD9BED8502633F9F85B9EC28EFF28622DBF84D5441C5B4427FCF3317010E829052D3C734A4C1A101DA32A040AD1F59E433FCA0C396AC686CD3E899738C261077CBB73F3932E8D25928EE0786E2093B85F8AA69F6A96B9F58AD72C85B8766AE08E074FB2D534362833D8F854C1197DC1EFC5030B88308325E5C5CC4E175204AEBA5D6752DDC2D7D7CE0D0FE7C75A14E4002849AD90D5A2EA0ACF3358A2AEAD65A5A6C8E2CABF6DEFD784726797AAA22EAA9E6711203D3F8BA53D2799CBD64ACF61B63BB4D8F3802F8F0575DC5AA255A0C5DC530FE2053196CE9C3");
+  BN_hex2bn(&s, "42846df91cbf1e7a5689c93c6dea0cc747053400dfbb0c51d400862fe22006292b352a07f39f08c08df539f2cce803844fdd34868c68a4b1977ec96c60d71515df2f57c41c77b159aaf7e9a950672a73968eeb534d07dd277e718051a4720ae1fe8870dd4e778e7fe6d77d7a117acab24e2a52a166fdd141a996deb13c0c1cd585c2bbb8631ba7d0b701d9f7f52aac093a933190a662eccc7144ab0939b49b38a545594d45a7694ae2cd583c0a808e19cd007adf8bbdfae0141d4b519c0deaa95b61da4abf595253462ecfd4710bbd7336b7151715399df889183bbf59b9924989aef3dbde3f785c0fe0483c39045132a2f11bfc9796d37d2a605948ee9f267e");
+  BN_hex2bn(&expected_m, "260d3c7db08d9175f38dab012dfb5efd621aa2c97ce942ad6a33d6d814602475");
+  BN_hex2bn(&e, "010001");
+
+  BN_mod_exp(signed_m, s, e, n, ctx);
+  printBN("Decrypted Signed message: m = s^e mod n = ", signed_m);
+  printBN("Excepted signed message: ", expected_m);
+
+  BN_clear_free(e);
+  BN_clear_free(n);
+  BN_clear_free(s);
+  BN_clear_free(signed_m);
+  BN_clear_free(expected_m);
+
+  return 0;
+}
+
+
+
+
+
+
